@@ -1,9 +1,9 @@
 # -*- coding:utf-8 -*-
 __author__ = 'chenjun'
-import cPickle as pickle
+import pickle as pickle
 import json, re
 import numpy as np
-from util import *
+from utils.util import *
 
 
 class Corpus:
@@ -76,7 +76,7 @@ def prepare_data(lang1, lang2, reverse=False):
         fra = sentence2indices(pair[1], input_lang.word2index)
         eng = sentence2indices(pair[0], output_lang.word2index)
         data.append([fra, eng])
-    print data[0]
+    print(data[0])
     pickle.dump(data, open("../data2/train_data.pkl", "w"))
 
 
