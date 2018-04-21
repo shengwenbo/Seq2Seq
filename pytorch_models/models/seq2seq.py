@@ -59,7 +59,7 @@ class Encoder(nn.Module):
         :return:
         """
         output = self.embedding(inputs)
-        for i in xrange(self.num_layers):
+        for i in range(self.num_layers):
             output, hidden = self.rnn(output, hidden)
         output, hidden = self.pre_reduce(output, hidden)
         return output, hidden
@@ -114,7 +114,7 @@ class AttentionDecoder(nn.Module):
         attn_applied = torch.bmm(attn_weights.unsqueeze(1), context)  # batch*1*sequence_length + batch*sequence_length*hidden_size -> batch*1*hidden_size
         output = torch.cat((embedded.squeeze(1), attn_applied.squeeze(1)), 1)  # b*(hidden_size*2)
         output = self.attn_combine(output).unsqueeze(1)  # batch*1*hidden_size
-        for i in xrange(self.num_layers):
+        for i in range(self.num_layers):
             output = F.relu(output)
             output, hidden = self.gru(output, hidden)
         output = F.log_softmax(self.linear(output.squeeze(1)))
@@ -150,7 +150,7 @@ class Seq2Seq(object):
         decoder_hidden = encoder_hidden
         loss = 0.
         # Teacher forcing: Feed the target as the next input
-        for di in xrange(self.target_length):
+        for di in range(self.target_length):
             target = target_variable[:, di]  # (batch,)
             decoder_output, decoder_hidden, _ = self.decoder(decoder_input, decoder_hidden, encoder_outputs)  # SOS + Target
             decoder_input = target.unsqueeze(1)  # Target, (batch, 1)
@@ -169,7 +169,7 @@ class Seq2Seq(object):
         decoder_inputs = [(Variable(torch.LongTensor([[SOS_token]])), decoder_hidden)]  # SOS
         beam = BeamSearch(self.vocab_size2, self.beam_size, decoder_hidden)
         # loop beam search
-        for di in xrange(self.target_length):
+        for di in range(self.target_length):
             decoder_outputs = []
             for decoder_input, decoder_hidden in decoder_inputs:
                 decoder_output, decoder_hidden, _ = self.decoder(decoder_input, decoder_hidden, encoder_outputs)  # SOS + Predict

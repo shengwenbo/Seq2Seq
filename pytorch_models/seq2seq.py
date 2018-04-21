@@ -45,7 +45,7 @@ class Encoder(nn.Module):
         :return:
         """
         output = self.embedding(inputs).view(1, 1, -1)
-        for i in xrange(self.num_layers):
+        for i in range(self.num_layers):
             output, hidden = self.rnn(output, hidden)
         return output, hidden
 
@@ -89,7 +89,7 @@ class Decoder(nn.Module):
         :return:
         """
         output = self.embedding(inputs).view(1, 1, -1)
-        for i in xrange(self.num_layers):
+        for i in range(self.num_layers):
             output = F.relu(output)
             output, hidden = self.gru(output, hidden)
         output = self.softmax(self.linear(output[0]))
@@ -147,7 +147,7 @@ class AttentionDecoder(nn.Module):
         attn_applied = torch.bmm(attn_weights.unsqueeze(0), encoder_outputs.unsqueeze(0))  # 1*1*sequence_length + 1*sequence_length*hidden_size -> 1*1*hidden_size
         output = torch.cat((embedded[0], attn_applied[0]), 1)  # 1*(hidden_size*2)
         output = self.attn_combine(output).unsqueeze(0)  # 1*1*hidden_size
-        for i in xrange(self.num_layers):
+        for i in range(self.num_layers):
             output = F.relu(output)
             output, hidden = self.gru(output, hidden)
         output = F.log_softmax(self.linear(output[0]))
@@ -178,7 +178,7 @@ class Seq2SeqChatBot(object):
         encoder_outputs = Variable(torch.zeros(self.sequence_length, self.hidden_size))
         encoder_outputs = encoder_outputs.cuda() if use_cuda else encoder_outputs
         loss = 0.
-        for ei in xrange(input_length):
+        for ei in range(input_length):
             encoder_output, encoder_hidden = self.encoder(input_variable[ei], encoder_hidden)
             encoder_outputs[ei] = encoder_output[0][0]  # 1*1*128
         decoder_input = Variable(torch.LongTensor([[SOS_token]]))
@@ -215,7 +215,7 @@ class Seq2SeqChatBot(object):
         encoder_hidden = self.encoder.init_hidden()
         encoder_outputs = Variable(torch.zeros(self.sequence_length, self.hidden_size))
         encoder_outputs = encoder_outputs.cuda() if use_cuda else encoder_outputs
-        for ei in xrange(input_length):
+        for ei in range(input_length):
             encoder_output, encoder_hidden = self.encoder(input_variable[ei], encoder_hidden)
             encoder_outputs[ei] = encoder_outputs[ei] + encoder_output[0][0]
         decoder_input = Variable(torch.LongTensor([[SOS_token]]))  # SOS
@@ -224,7 +224,7 @@ class Seq2SeqChatBot(object):
         decoded_words = []
         decoder_attentions = torch.zeros(self.sequence_length, self.sequence_length)
         # loop
-        for di in xrange(self.sequence_length):
+        for di in range(self.sequence_length):
             decoder_output, decoder_hidden, decoder_attention = self.decoder(decoder_input, decoder_hidden, encoder_outputs)  # SOS + Predict
             decoder_attentions[di] = decoder_attention.data
             topv, topi = decoder_output.data.topk(1)
@@ -265,7 +265,7 @@ class Seq2SeqTranslate(object):
         encoder_outputs = Variable(torch.zeros(self.sequence_length, self.hidden_size))
         encoder_outputs = encoder_outputs.cuda() if use_cuda else encoder_outputs
         loss = 0.
-        for ei in xrange(input_length):
+        for ei in range(input_length):
             encoder_output, encoder_hidden = self.encoder(input_variable[ei], encoder_hidden)
             encoder_outputs[ei] = encoder_output[0][0]  # 1*1*hidden_size
         decoder_input = Variable(torch.LongTensor([[SOS_token]]))
@@ -302,7 +302,7 @@ class Seq2SeqTranslate(object):
         encoder_hidden = self.encoder.init_hidden()
         encoder_outputs = Variable(torch.zeros(self.sequence_length, self.hidden_size))
         encoder_outputs = encoder_outputs.cuda() if use_cuda else encoder_outputs
-        for ei in xrange(input_length):
+        for ei in range(input_length):
             encoder_output, encoder_hidden = self.encoder(input_variable[ei], encoder_hidden)
             encoder_outputs[ei] = encoder_output[0][0]
         decoder_input = Variable(torch.LongTensor([[SOS_token]]))  # SOS
@@ -311,7 +311,7 @@ class Seq2SeqTranslate(object):
         decoded_words = []
         decoder_attentions = torch.zeros(self.sequence_length, self.sequence_length)
         # loop
-        for di in xrange(self.sequence_length):
+        for di in range(self.sequence_length):
             decoder_output, decoder_hidden, decoder_attention = self.decoder(decoder_input, decoder_hidden, encoder_outputs)  # SOS + Predict
             decoder_attentions[di] = decoder_attention.data
             topv, topi = decoder_output.data.topk(1)

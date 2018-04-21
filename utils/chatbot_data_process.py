@@ -125,7 +125,7 @@ def generate_train_data(conversations_file, train_data_save_file):
     print "corpus length: ", len(corpus)
     corpus_word2index(corpus, word2index_file="../data/w2i.json", index2word_file='../data/i2w.json')
     train_data = []
-    for i in xrange(len(a_data)):
+    for i in range(len(a_data)):
         encoder_input = sentence2indices(a_data[i], "../data/w2i.json")
         target_input = sentence2indices(b_data[i], "../data/w2i.json")
         decoder_input = [SOS_token] + target_input  ### SOS

@@ -95,7 +95,7 @@ class BeamSearch(object):
         all_hypothesis = []
         for i, (input, state) in enumerate(inputs):
             top_log_probs, top_tokens = input.data.topk(self.vocab_size)
-            for j in xrange(self.beam_size*2):
+            for j in range(self.beam_size*2):
                 token = top_tokens[0][j]  # value
                 log_prob = top_log_probs[0][j]  # value
                 all_hypothesis.append(self.hypothesis[i].extend(token, log_prob, state))

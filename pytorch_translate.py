@@ -15,7 +15,7 @@ def build_model(batch_size=1, vocab_size1=4086, vocab_size2=2883, hidden_size=12
     embedding1 = nn.Embedding(vocab_size1, hidden_size)
     embedding2 = nn.Embedding(vocab_size2, hidden_size)
     model = Seq2SeqTranslate(embedding1, embedding2, vocab_size2, batch_size, hidden_size, sequence_length=MAX_LENGTH, drop_rate=0.1, lr=lr)
-    for i in xrange(n_iters):
+    for i in range(n_iters):
         input = random.choice(inputs)
         ei = Variable(torch.from_numpy(input[0]))
         dt = Variable(torch.from_numpy(input[1]))
@@ -23,7 +23,7 @@ def build_model(batch_size=1, vocab_size1=4086, vocab_size2=2883, hidden_size=12
         if i % 50 == 0:
             print ("index: %d, loss: %f") % (i, loss)
     # evaluate
-    for i in xrange(evaluate):
+    for i in range(evaluate):
         input = random.choice(inputs)
         ei = Variable(torch.from_numpy(input[0]))
         generate, attn_w = model.generate(ei)

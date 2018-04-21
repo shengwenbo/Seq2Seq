@@ -22,7 +22,7 @@ def build_model(vocab_size_src=4096, vocab_size_tar=2883, hidden_size=128, layer
     epoch = 0
     while epoch < n_epochs:
         epoch += 1
-        for batch_index in xrange(num_batchs):
+        for batch_index in range(num_batchs):
             ei = encoder_inputs[batch_index * batch_size: (batch_index + 1) * batch_size]
             el = encoder_length[batch_index * batch_size: (batch_index + 1) * batch_size]
             di = decoder_inputs[batch_index * batch_size: (batch_index + 1) * batch_size]
@@ -31,16 +31,16 @@ def build_model(vocab_size_src=4096, vocab_size_tar=2883, hidden_size=128, layer
             if batch_index % 10 == 0:
                 print ("epoch: %d/%d, batch: %d/%d, loss: %f") % (epoch, n_epochs, batch_index, num_batchs, loss)
     # evaluate
-    for i in xrange(evaluate):
+    for i in range(evaluate):
         index = np.random.randint(low=0, high=encoder_inputs.shape[0])
         ei = encoder_inputs[index]
         el = encoder_length[index]
         dt = decoder_target[index]
         generate = model.generate(sess, ei, el)
-        print "> ", indices2sentence(parse_output(ei), 'data2/fra_i2w.json')
-        print "= ", indices2sentence(parse_output(dt), 'data2/eng_i2w.json')
-        print "< ", indices2sentence(parse_output(generate), 'data2/eng_i2w.json')
-        print ""
+        print ("> ", indices2sentence(parse_output(ei), 'data2/fra_i2w.json'))
+        print ("= ", indices2sentence(parse_output(dt), 'data2/eng_i2w.json'))
+        print ("< ", indices2sentence(parse_output(generate), 'data2/eng_i2w.json'))
+        print ("")
 
 
 if __name__ == '__main__':

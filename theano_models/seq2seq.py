@@ -36,7 +36,7 @@ class Encoder(object):
         :return:
         """
         out = self.embedding[inputs.flatten()].reshape((inputs.shape[0], inputs.shape[1], self.hidden_size))
-        for i in xrange(self.num_layers):
+        for i in range(self.num_layers):
             out, h = self.gru_layer(out, mask, h)
         return out, h
 
@@ -76,7 +76,7 @@ class Decoder(object):
         :return:
         """
         output = self.embedding[inputs.flatten()].reshape((-1, 1, self.hidden_size))  # batch*1*hidden_size
-        for i in xrange(self.num_layers):
+        for i in range(self.num_layers):
             output = ReLU(output)
             output, h = self.gru_layer(output, mask, h)
         output = T.tensordot(output, self.linear, axes=[2, 0])  # b*1*hidden_size hidden_size*vocab_size
@@ -140,7 +140,7 @@ class AttentionDecoder(object):
         output = T.concatenate([embedded, attn_applied[:, 0, :]], 1)  # b*(hidden_size*2)
         output = self.linear_func(output, self.attn_combine_W, self.attn_combine_b)  # b*hidden_size
         output = output.reshape((-1, 1, self.hidden_size))
-        for i in xrange(self.num_layers):
+        for i in range(self.num_layers):
             output = ReLU(output)
             output, h = self.gru_layer(output, mask, h)
         output = T.tensordot(output, self.linear, axes=[2, 0])
@@ -192,7 +192,7 @@ class Seq2SeqTranslate(object):
         encoder_outputs, encoder_h = self.encoder(self.encoder_inputs, self.encoder_mask)
         decoder_outputs = []
         decoder_h = encoder_h
-        for i in xrange(max_length):
+        for i in range(max_length):
             word_indices = self.decoder_inputs[:, i].reshape((-1, 1))  # teacher force
             mask = self.decoder_mask[:, i].reshape((-1, 1))
             decoder_out, decoder_h, attn_w = self.decoder(word_indices, mask, decoder_h, encoder_outputs)
@@ -212,7 +212,7 @@ class Seq2SeqTranslate(object):
         decoder_h = encoder_h
         word_indices = self.decoder_inputs[:, 0].reshape((-1, 1))  # SOS=1
         mask = word_indices  # 1
-        for i in xrange(max_length):
+        for i in range(max_length):
             decoder_out, decoder_h, attn_w = self.decoder(word_indices, mask, decoder_h, encoder_outputs)  # predict
             softmax_out = T.nnet.softmax(decoder_out[:, 0, :])
             word_indices = T.cast(T.argmax(softmax_out, -1), dtype="int64")
@@ -298,7 +298,7 @@ class Seq2SeqChatBot(object):
         encoder_outputs, encoder_h = self.encoder(self.encoder_inputs, self.encoder_mask)
         decoder_outputs = []
         decoder_h = encoder_h
-        for i in xrange(max_length):
+        for i in range(max_length):
             word_indices = self.decoder_inputs[:, i].reshape((-1, 1))  # teacher force
             mask = self.decoder_mask[:, i].reshape((-1, 1))
             decoder_out, decoder_h, attn_w = self.decoder(word_indices, mask, decoder_h, encoder_outputs)
@@ -319,7 +319,7 @@ class Seq2SeqChatBot(object):
         decoder_h = encoder_h
         word_indices = self.decoder_inputs[:, 0].reshape((-1, 1))  # SOS=1
         mask = word_indices  # 1
-        for i in xrange(max_length):
+        for i in range(max_length):
             decoder_out, decoder_h, attn_w = self.decoder(word_indices, mask, decoder_h, encoder_outputs)  # predict
             softmax_out = T.nnet.softmax(decoder_out[:, 0, :])
             word_indices = T.cast(T.argmax(softmax_out, -1), dtype="int64")

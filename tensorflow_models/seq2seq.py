@@ -31,7 +31,7 @@ class Encoder(object):
         :return:
         """
         out = tf.nn.embedding_lookup(self.embedding, inputs)
-        for i in xrange(self.num_layers):
+        for i in range(self.num_layers):
             out, state = tf.nn.dynamic_rnn(self.gru_cell, out, sequence_length=sequence_length, initial_state=state, dtype=tf.float32)
         return out, state
 
@@ -53,7 +53,7 @@ class Decoder(object):
         self.gru_cell = rnn.GRUCell(self.hidden_size)
         self.linear = tf.Variable(tf.random_normal(shape=(self.hidden_size, self.vocab_size)) * 0.1)
         
-    def __call__(inputs, state):
+    def __call__(self, inputs, state):
         """
         decoder using gru.
         :param inputs: word indices(batch, )
@@ -61,7 +61,7 @@ class Decoder(object):
         :return:
         """
         output = tf.nn.dropout(tf.nn.embedding_lookup(self.embedding, inputs), keep_prob=self.keep_prop)  # batch*hidden_size
-        for i in xrange(self.num_layers):
+        for i in range(self.num_layers):
             output = tf.nn.relu(output)
             output, state = tf.nn.dynamic_rnn(self.gru_cell, output, initial_state=state, dtype=tf.float32)
         output = tf.tensordot(output, self.linear, axes=[[2], [0]])  # b*1*hidden_size hidden_size*vocab_size
@@ -121,7 +121,7 @@ class AttentionDecoder(object):
         attn_applied = tf.matmul(tf.expand_dims(attn_weights, 1), encoder_outputs)  # batch*1*max_length   *   batch*max_length*hidden_size -> batch*1*hidden_size
         output = tf.concat([embedded, attn_applied[:, 0, :]], 1)  # b*(hidden_size*2)
         output = tf.expand_dims(self.linear_func(output, self.attn_combine_W, self.attn_combine_b), 1)  # b*1*hidden_size
-        for i in xrange(self.num_layers):
+        for i in range(self.num_layers):
             output = tf.nn.relu(output)
             output, state = tf.nn.dynamic_rnn(self.gru_cell, output, initial_state=state, dtype=tf.float32)
         output = tf.tensordot(output, self.linear, axes=[[2], [0]])  # b*1*hidden_size hidden_size*vocab_size
@@ -173,7 +173,7 @@ class Seq2SeqTranslate(object):
             tf.get_variable_scope().reuse_variables()  # reuse
             decoder_outputs = []
             decoder_state = encoder_state
-            for i in xrange(self.max_length):
+            for i in range(self.max_length):
                 word_indices = self.decoder_inputs[:, i]
                 decoder_out, decoder_state, attn_w = self.decoder(word_indices, encoder_outputs, decoder_state)
                 decoder_outputs.append(decoder_out)
@@ -187,7 +187,7 @@ class Seq2SeqTranslate(object):
             self.generate_outputs = []
             decoder_state = encoder_state
             word_indices = self.decoder_inputs[:, 0]  # SOS
-            for i in xrange(self.max_length):
+            for i in range(self.max_length):
                 decoder_out, decoder_state, attn_w = self.decoder(word_indices, encoder_outputs, decoder_state)
                 softmax_out = tf.nn.softmax(decoder_out[:, 0, :])
                 word_indices = tf.cast(tf.arg_max(softmax_out, -1), dtype=tf.int64)  # b * 1
@@ -274,7 +274,7 @@ class Seq2SeqChatBot(object):
             tf.get_variable_scope().reuse_variables()  # reuse
             decoder_outputs = []
             decoder_state = encoder_state
-            for i in xrange(self.max_length):
+            for i in range(self.max_length):
                 word_indices = self.decoder_inputs[:, i]
                 decoder_out, decoder_state, attn_w = self.decoder(word_indices, encoder_outputs, decoder_state)
                 decoder_outputs.append(decoder_out)
@@ -288,7 +288,7 @@ class Seq2SeqChatBot(object):
             self.generate_outputs = []
             decoder_state = encoder_state
             word_indices = self.decoder_inputs[:, 0]  # SOS
-            for i in xrange(self.max_length):
+            for i in range(self.max_length):
                 decoder_out, decoder_state, attn_w = self.decoder(word_indices, encoder_outputs, decoder_state)
                 softmax_out = tf.nn.softmax(decoder_out[:, 0, :])
                 word_indices = tf.cast(tf.arg_max(softmax_out, -1), dtype=tf.int64)  # b * 1

@@ -21,7 +21,7 @@ def build_model(vocab_size=11394, hidden_size=128, layers_num=1, batch_size=100,
     epoch = 0
     while epoch < n_epochs:
         epoch += 1
-        for batch_index in xrange(num_batchs):
+        for batch_index in range(num_batchs):
             ei = encoder_inputs[batch_index * batch_size: (batch_index + 1) * batch_size]
             el = encoder_length[batch_index * batch_size: (batch_index + 1) * batch_size]
             di = decoder_inputs[batch_index * batch_size: (batch_index + 1) * batch_size]
@@ -30,7 +30,7 @@ def build_model(vocab_size=11394, hidden_size=128, layers_num=1, batch_size=100,
             if batch_index % 10 == 0:
                 print ("epoch: %d/%d, batch: %d/%d, loss: %f") % (epoch, n_epochs, batch_index, num_batchs, loss)
     # evaluate
-    for i in xrange(evaluate):
+    for i in range(evaluate):
         index = np.random.randint(low=0, high=encoder_inputs.shape[0])
         ei = encoder_inputs[index]
         el = encoder_length[index]
