@@ -101,4 +101,9 @@ ENV/
 .mypy_cache/
 
 #pycharm
-.idea
+.idea/
+
+#data
+corpus/
+data2/
+data/
