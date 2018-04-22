@@ -17,7 +17,7 @@ if __name__ == "__main__":
                         fout.write("%s\t%s\n" % (origin, c))
                         fout.write("%s\t%s\n" % (c, c))
                         count += 1
-                        if count > 1000:
+                        if count > 3000:
                             exit(1)
                 else:
                     fout.write("%s\t%s\n" % (origin, origin))

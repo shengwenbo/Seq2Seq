@@ -3,7 +3,7 @@ __author__ = 'chenjun'
 import numpy as np
 import re, json
 
-
+NONE_token = np.int64(0)
 SOS_token = np.int64(1)
 EOS_token = np.int64(2)
 UNK_token = np.int64(3)

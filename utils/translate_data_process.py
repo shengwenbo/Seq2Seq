@@ -11,7 +11,7 @@ class Corpus:
         self.name = name
         self.word2index = {}
         self.word2count = {}
-        self.index2word = {1: "SOS", 2: "EOS"}
+        self.index2word = {0:"", 1: "SOS", 2: "EOS"}
         self.n_words = 3  # Count SOS and EOS
 
     def add_sentence(self, sentence):
