@@ -5,12 +5,13 @@ import tensorflow as tf
 from tensorflow_models.seq2seq import Seq2SeqTranslate
 from utils.util import *
 from utils.translate_data_process import load_data_for_tensorflow
+import time
 
 
-def build_model(vocab_size_src=4096, vocab_size_tar=2883, hidden_size=128, layers_num=1, batch_size=100, n_epochs=20, evaluate=40):
+def build_model(vocab_size_src=7752, vocab_size_tar=7784, hidden_size=128, layers_num=1, batch_size=100, n_epochs=5, evaluate=40):
     encoder_inputs, encoder_length, decoder_inputs, decoder_target = load_data_for_tensorflow("data2/train_data.pkl")
     num_batchs = encoder_inputs.shape[0] // batch_size
-    print ("train_batch_num: %d") % (num_batchs)
+    print ("train_batch_num: %d" % (num_batchs))
     emb_src = np.random.uniform(low=-0.1, high=0.1, size=(vocab_size_src, hidden_size))
     emb_tar = np.random.uniform(low=-0.1, high=0.1, size=(vocab_size_tar, hidden_size))
     model = Seq2SeqTranslate(emb_src, emb_tar, vocab_size_src, vocab_size_tar, hidden_size, MAX_LENGTH, layers_num, learning_rate=0.01)
@@ -20,16 +21,24 @@ def build_model(vocab_size_src=4096, vocab_size_tar=2883, hidden_size=128, layer
     init = tf.global_variables_initializer()
     sess.run(init)
     epoch = 0
+    start_time = time.time()
+    total_batches = n_epochs * num_batchs
+    cur_batches = 0
     while epoch < n_epochs:
         epoch += 1
         for batch_index in range(num_batchs):
+            cur_batches += 1
             ei = encoder_inputs[batch_index * batch_size: (batch_index + 1) * batch_size]
             el = encoder_length[batch_index * batch_size: (batch_index + 1) * batch_size]
             di = decoder_inputs[batch_index * batch_size: (batch_index + 1) * batch_size]
             dt = decoder_target[batch_index * batch_size: (batch_index + 1) * batch_size]
             loss = model.train(sess, ei, el, di, dt)
-            if batch_index % 10 == 0:
-                print ("epoch: %d/%d, batch: %d/%d, loss: %f") % (epoch, n_epochs, batch_index, num_batchs, loss)
+            if batch_index % 10 == 1:
+                print ("epoch: %d/%d, batch: %d/%d, loss: %f" % (epoch, n_epochs, batch_index, num_batchs, loss))
+                cur_time = time.time()
+                cost_time = int(cur_time - start_time)
+                total_time = cost_time * total_batches // cur_batches
+                print ("cost time: %s/%s" % (second2time(cost_time), second2time(total_time)))
     # evaluate
     for i in range(evaluate):
         index = np.random.randint(low=0, high=encoder_inputs.shape[0])

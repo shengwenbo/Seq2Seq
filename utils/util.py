@@ -7,18 +7,17 @@ import re, json
 SOS_token = np.int64(1)
 EOS_token = np.int64(2)
 UNK_token = np.int64(3)
-MAX_LENGTH = np.int64(10)
+MAX_LENGTH = np.int64(100)
 use_cuda = 0
 teacher_forcing_ratio = 0.5
-eng_prefixes = (
-    "i am ", "i m ",
-    "he is", "he s ",
-    "she is", "she s",
-    "you are", "you re ",
-    "we are", "we re ",
-    "they are", "they re "
-)
 
+def second2time(iItv):
+    h=iItv//3600
+    sUp_h=iItv-3600*h
+    m=sUp_h//60
+    sUp_m=sUp_h-60*m
+    s=sUp_m
+    return ":".join(map(str,(h,m,s)))
 
 def parse_output(token_indices):
     res = []

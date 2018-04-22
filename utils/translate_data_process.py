@@ -31,9 +31,9 @@ class Corpus:
 def read_langs(lang1, lang2, reverse=False):  # eng[1][output] - fra[2][input]
     print("Reading lines...")
     # Read the file and split into lines
-    lines = open('../corpus/%s-%s.txt' % (lang1, lang2)).read().strip().split('\n')
+    lines = open('../corpus/%s-%s.txt' % (lang1, lang2), encoding="utf-8").read().strip().split('\n')
     # Split every line into pairs and normalize
-    pairs = [[clean_text(s) for s in l.split('\t')] for l in lines]  # eng-fra
+    pairs = [l.split('\t') for l in lines]  # eng-fra
 
     # Reverse pairs, make Lang instances
     if reverse:
@@ -48,7 +48,7 @@ def read_langs(lang1, lang2, reverse=False):  # eng[1][output] - fra[2][input]
 
 
 def filter_pair(p):  # eng - fra
-    return len(p[0].split(' ')) < MAX_LENGTH and len(p[1].split(' ')) < MAX_LENGTH and p[0].startswith(eng_prefixes)
+    return len(p[0].split(' ')) < MAX_LENGTH and len(p[1].split(' ')) < MAX_LENGTH
 
 
 def filter_pairs(pairs):
@@ -58,7 +58,6 @@ def filter_pairs(pairs):
 def prepare_data(lang1, lang2, reverse=False):
     input_lang, output_lang, pairs = read_langs(lang1, lang2, reverse)  # eng[lang1][output] - fra[lang2][input]
     print("Read %s sentence pairs" % len(pairs))
-    pairs = filter_pairs(pairs)
     print("Trimmed to %s sentence pairs" % len(pairs))
     print("Counting words...")
     for pair in pairs:
@@ -77,7 +76,7 @@ def prepare_data(lang1, lang2, reverse=False):
         eng = sentence2indices(pair[0], output_lang.word2index)
         data.append([fra, eng])
     print(data[0])
-    pickle.dump(data, open("../data2/train_data.pkl", "w"))
+    pickle.dump(data, open("../data2/train_data.pkl", "wb"))
 
 
 def load_data_for_pytorch(path):
@@ -108,8 +107,8 @@ def load_data_for_theano(path):
 
 def load_data_for_tensorflow(data_path):
     encoder_input, encoder_length, decoder_input, decoder_target = [], [], [], []
-    with open(data_path) as mf:
-        data = pickle.load(mf)
+    with open(data_path, "rb") as mf:
+        data = pickle.load(mf, encoding="utf-8")
         for fra, eng in data:
             ei = fra  # fra
             tg = eng  # eng
@@ -126,4 +125,4 @@ def load_data_for_tensorflow(data_path):
 
 
 if __name__ == "__main__":
-    prepare_data('eng', 'fra')
+    prepare_data('wrong', 'right', reverse=True)
