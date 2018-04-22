@@ -8,7 +8,7 @@ from utils.translate_data_process import load_data_for_tensorflow
 import time
 
 
-def build_model(vocab_size_src=7752, vocab_size_tar=7784, hidden_size=128, layers_num=1, batch_size=400, n_epochs=1, evaluate=10):
+def build_model(vocab_size_src=7752, vocab_size_tar=7784, hidden_size=128, layers_num=1, batch_size=400, n_epochs=2, evaluate=1):
     encoder_inputs, encoder_length, decoder_inputs, decoder_target = load_data_for_tensorflow("data2/train_data.pkl")
     num_batchs = encoder_inputs.shape[0] // batch_size
     print ("train_batch_num: %d" % (num_batchs))
@@ -67,7 +67,6 @@ def load_model(evaluate=20):
         model_encoder_inputs = graph.get_tensor_by_name("place_holder/encoder_inputs:0")
         model_encoder_length = graph.get_tensor_by_name("place_holder/encoder_length:0")
         model_decoder_inputs = graph.get_tensor_by_name("place_holder/decoder_inputs:0")
-        model_decoder_target = graph.get_tensor_by_name("place_holder/decoder_target:0")
         generate_outputs = graph.get_tensor_by_name("seq2seq-generate/generate_outputs:0")
         # evaluate
         for i in range(evaluate):
@@ -92,5 +91,5 @@ def load_model(evaluate=20):
 
 
 if __name__ == '__main__':
-    # build_model()
+    build_model()
     load_model()

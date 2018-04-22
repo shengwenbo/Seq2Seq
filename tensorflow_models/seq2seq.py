@@ -190,7 +190,7 @@ class Seq2SeqTranslate(object):
             for i in range(self.max_length):
                 decoder_out, decoder_state, attn_w = self.decoder(word_indices, encoder_outputs, decoder_state)
                 softmax_out = tf.nn.softmax(decoder_out[:, 0, :])
-                word_indices = tf.cast(tf.arg_max(softmax_out, -1), dtype=tf.int64)  # b * 1
+                word_indices = tf.cast(tf.argmax(softmax_out, -1), dtype=tf.int64)  # b * 1
                 self.generate_outputs.append(word_indices)
             self.generate_outputs = tf.concat(self.generate_outputs, 0, name="generate_outputs")
 
